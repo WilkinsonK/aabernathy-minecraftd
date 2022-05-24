@@ -36,6 +36,7 @@
 #define MCDEFAULT_JAR "server-1.18.1.jar"
 
 #define MCDEFAULT_STR_SIZE 24
+#define MCDEFAULT_STR_SIZE_MAX 128
 #define MCDEFAULT_STR_FMT "%s"
 
 #include <stdio.h>
@@ -127,12 +128,63 @@ void server_parse_envvars() {
 }
 
 
+/**
+ * Starts the server engine.
+ * WARNING: Assumes all necessary
+ * vars have been parsed and assigned.
+*/
+void server_start_engine() {
+    // Collect arguments to pass to
+    // executor.
+    char *engine_args[] = {
+        MCSERVER_EXE,
+        MCSERVER_JAR,
+        MCSERVER_RAM_INI,
+        MCSERVER_RAM_MAX, NULL}; // Must terminate args with `NULL`.
+
+    // String buffer values for
+    // creating a render of the above
+    // engine args. Cosmetic detail for
+    // runtime readability.
+    char sbuffer[MCDEFAULT_STR_SIZE_MAX];
+    char nbuffer[MCDEFAULT_STR_SIZE];
+
+    int step = 0;
+    do {
+        // Parses the next value for the
+        // string output.
+        if (engine_args[step] == NULL) {
+            strcpy(nbuffer, "\0");
+        } else { sprintf(nbuffer, "'%s'", engine_args[step]); }
+
+        // Check to see if the current
+        // argument is the tail of the
+        // values.
+        if (engine_args[step] != NULL && engine_args[step + 1] != NULL) {
+            strcat(nbuffer, ", ");
+        }
+
+        // Append next buffer to the string
+        // buffer.
+        strcat(sbuffer, nbuffer);
+
+        step++;
+    } while (strcmp(nbuffer, "\0"));
+
+    printf("SERVER_ARGS={%s}\n", sbuffer);
+
+    // Call the executable with
+    // arguments
+    int ret = execvp(engine_args[0], engine_args);
+
+    if (ret == -1) {
+        perror("execvp");
+    }
+}
+
+
 int main(int argc, char** argv, char** penv) {
     server_parse_envvars();
-    printf("INITIAL RAM: %s\n", MCSERVER_RAM_INI);
-    printf("MAXIMUM RAM: %s\n", MCSERVER_RAM_MAX);
-
-    // char *args[] = {MCSERVER_JAR, MCSERVER_RAM_INI, MCSERVER_RAM_MAX}
-    // execvp(MCSERVER_EXE)
+    server_start_engine();
     return 0;
 }
