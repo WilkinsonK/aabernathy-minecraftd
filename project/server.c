@@ -35,7 +35,7 @@
 #define MCDEFAULT_RAM "1024M"
 #define MCDEFAULT_JAR "server-1.18.1.jar"
 
-#define MCDEFAULT_STR_SIZE 24
+#define MCDEFAULT_STR_SIZE 64
 #define MCDEFAULT_STR_SIZE_MAX 128
 #define MCDEFAULT_STR_FMT "%s"
 
@@ -92,7 +92,7 @@ char* server_getvalue(const char* envname, char* valdefault) {
  * environment, replaced with the
  * default if not found.
 */
-void server_parsef(char * target, const char * valformat, char * envname, char * envdefault) {
+void server_parsef(char* target, const char* valformat, char* envname, char* envdefault) {
     char buffer[MCDEFAULT_STR_SIZE];
 
     // If no format was passed,
@@ -109,6 +109,45 @@ void server_parsef(char * target, const char * valformat, char * envname, char *
 
     sprintf(buffer, valformat, server_getvalue(envname, envdefault));
     strcpy(target, buffer);
+}
+
+
+/**
+ * Renders a collection of arguments as a
+ * concatenated list ready for printing to
+ * `stdout`.
+*/
+void server_render_argout(char* engine_args[]) {
+    // String buffer values for
+    // creating a render of the above
+    // engine args. Cosmetic detail for
+    // runtime readability.
+    char sbuffer[MCDEFAULT_STR_SIZE_MAX] = "";
+    char nbuffer[MCDEFAULT_STR_SIZE];
+
+    int step = 0;
+    do {
+        // Parses the next value for the
+        // string output.
+        if (engine_args[step] == NULL) {
+            strcpy(nbuffer, "\0");
+        } else { sprintf(nbuffer, "'%s'", engine_args[step]); }
+
+        // Check to see if the current
+        // argument is the tail of the
+        // values.
+        if (engine_args[step] != NULL && engine_args[step + 1] != NULL) {
+            strcat(nbuffer, ", ");
+        }
+
+        // Append next buffer to the string
+        // buffer.
+        strcat(sbuffer, nbuffer);
+
+        step++;
+    } while (strcmp(nbuffer, "\0"));
+
+    printf("SERVER_ARGS={%s}\n", sbuffer);
 }
 
 
@@ -136,42 +175,13 @@ void server_parse_envvars() {
 void server_start_engine() {
     // Collect arguments to pass to
     // executor.
-    char *engine_args[] = {
+    char* engine_args[] = {
         MCSERVER_EXE,
         MCSERVER_JAR,
         MCSERVER_RAM_INI,
         MCSERVER_RAM_MAX, NULL}; // Must terminate args with `NULL`.
 
-    // String buffer values for
-    // creating a render of the above
-    // engine args. Cosmetic detail for
-    // runtime readability.
-    char sbuffer[MCDEFAULT_STR_SIZE_MAX];
-    char nbuffer[MCDEFAULT_STR_SIZE];
-
-    int step = 0;
-    do {
-        // Parses the next value for the
-        // string output.
-        if (engine_args[step] == NULL) {
-            strcpy(nbuffer, "\0");
-        } else { sprintf(nbuffer, "'%s'", engine_args[step]); }
-
-        // Check to see if the current
-        // argument is the tail of the
-        // values.
-        if (engine_args[step] != NULL && engine_args[step + 1] != NULL) {
-            strcat(nbuffer, ", ");
-        }
-
-        // Append next buffer to the string
-        // buffer.
-        strcat(sbuffer, nbuffer);
-
-        step++;
-    } while (strcmp(nbuffer, "\0"));
-
-    printf("SERVER_ARGS={%s}\n", sbuffer);
+    server_render_argout((char**)engine_args);
 
     // Call the executable with
     // arguments
