@@ -50,9 +50,7 @@ build: $(BUILD_ROOT)/.hash $(BUILD_ROOT)/bin $(BUILD_ROOT)/plugins
 .PHONEY: build
 
 clean:
-> rm -rf build
-> rm -rf tmp
-> rm -rf out
+> rm -rf $(BUILD_ROOT)
 .PHONEY: clean
 
 $(BUILD_ROOT)/.hash: $(shell find project/tools -type f)
