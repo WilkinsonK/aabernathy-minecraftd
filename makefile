@@ -36,15 +36,15 @@ endif
 .RECIPEPREFIX = >
 
 # Compiler configuration.
-CCOMPILER = gcc
-CCOMPILER_ARGS = 
+CCOMPILER := gcc
+CCOMPILER_ARGS := 
 
 # Root directory of build/distribution.
-BUILD_ROOT = build
+BUILD_ROOT := build
 
 # List of files in the tools dir. These files
 # will be assumed to be ready-to-compile.
-BUILD_TOOLS = $(shell find project/tools -type f)
+BUILD_TOOLS := $(shell find project/tools -type f)
 
 build: $(BUILD_ROOT)/.hash $(BUILD_ROOT)/bin $(BUILD_ROOT)/plugins
 .PHONEY: build
@@ -53,16 +53,14 @@ clean:
 > rm -rf $(BUILD_ROOT)
 .PHONEY: clean
 
-$(BUILD_ROOT)/.hash: $(shell find project/tools -type f)
+$(BUILD_ROOT)/.hash: $(BUILD_TOOLS)
 > @ # Execute in silence.
 > build_root=$(@D)
 > mkdir -p $${build_root}
 > echo "$$(pwgen -1As)" > $${build_root}/.hash
 
 $(BUILD_ROOT)/bin:
-> @
-> mkdir -p $(@D)/bin
+> @[ -d $(@D)/bin ] || mkdir -p $(@D)/bin
 
 $(BUILD_ROOT)/plugins:
-> @
-> mkdir -p $(@D)/plugins
+> @[ -d $(@D)/plugins ] || mkdir -p $(@D)/plugins
