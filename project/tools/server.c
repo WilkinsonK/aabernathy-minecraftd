@@ -32,8 +32,9 @@
 
 #define MCDEFAULT_DEFAULT ""
 #define MCDEFAULT_EXE "java"
-#define MCDEFAULT_RAM "1024M"
 #define MCDEFAULT_JAR "server-1.18.1.jar"
+#define MCDEFAULT_NOGUI "nogui"
+#define MCDEFAULT_RAM "1024M"
 
 #define MCDEFAULT_STR_SIZE 64
 #define MCDEFAULT_STR_SIZE_MAX 128
@@ -67,6 +68,18 @@ char MCSERVER_RAM_INI[MCDEFAULT_STR_SIZE];
  * server is allowed to access at one time.
 */
 char MCSERVER_RAM_MAX[MCDEFAULT_STR_SIZE];
+
+/**
+ * Placeholder for arguments passed to this
+ * executable at runtime.
+*/
+char **MCSERVER_RUNTIME_ARGV;
+
+/**
+ * Placeholder for argument count passed
+ * to this executable at runtime.
+*/
+int MCSERVER_RUNTIME_ARGC;
 
 
 /**
@@ -117,7 +130,7 @@ void server_parsef(char* target, const char* valformat, char* envname, char* env
  * concatenated list ready for printing to
  * `stdout`.
 */
-void server_render_argout(char* engine_args[]) {
+void server_render_argout(char* engine_args[], char* bufsep) {
     // String buffer values for
     // creating a render of the above
     // engine args. Cosmetic detail for
@@ -137,7 +150,7 @@ void server_render_argout(char* engine_args[]) {
         // argument is the tail of the
         // values.
         if (engine_args[step] != NULL && engine_args[step + 1] != NULL) {
-            strcat(nbuffer, ", ");
+            strcat(nbuffer, bufsep);
         }
 
         // Append next buffer to the string
@@ -159,7 +172,7 @@ void server_parse_envvars() {
 
     // target binaries.
     server_parsef(MCSERVER_EXE, NULL, "MCSERVER_EXE", MCDEFAULT_EXE);
-    server_parsef(MCSERVER_JAR, NULL, "MCSERVER_JAR", MCDEFAULT_JAR);
+    server_parsef(MCSERVER_JAR, "-jar %s", "MCSERVER_JAR", MCDEFAULT_JAR);
 
     // Memory related values.
     server_parsef(MCSERVER_RAM_INI, "-Xms%s", "MCSERVER_RAM_INI", MCDEFAULT_RAM);
@@ -169,6 +182,7 @@ void server_parse_envvars() {
 
 /**
  * Starts the server engine.
+ * 
  * WARNING: Assumes all necessary
  * vars have been parsed and assigned.
 */
@@ -177,23 +191,28 @@ void server_start_engine() {
     // executor.
     char* engine_args[] = {
         MCSERVER_EXE,
-        MCSERVER_JAR,
         MCSERVER_RAM_INI,
-        MCSERVER_RAM_MAX, NULL}; // Must terminate args with `NULL`.
+        MCSERVER_RAM_MAX,
+        MCSERVER_JAR,
+        MCDEFAULT_NOGUI, NULL}; // Must terminate args with `NULL`.
 
-    server_render_argout((char**)engine_args);
+    server_render_argout((char**)engine_args, ", ");
 
     // Call the executable with
     // arguments
     int ret = execvp(engine_args[0], engine_args);
 
-    if (ret == -1) {
-        perror("execvp");
-    }
+    // Complain if something goes
+    // wrong.
+    if (ret == -1) { perror("execvp"); }
 }
 
 
 int main(int argc, char** argv, char** penv) {
+    // Store our CLI arguments elsewhere.
+    MCSERVER_RUNTIME_ARGC = argc;
+    MCSERVER_RUNTIME_ARGV = argv;
+
     server_parse_envvars();
     server_start_engine();
     return 0;
