@@ -40,27 +40,46 @@ CCOMPILER := gcc
 CCOMPILER_ARGS := 
 
 # Root directory of build/distribution.
-BUILD_ROOT := build
+BUILD_ROOT := dist
+
+# Root directory of project scripts.
+SCRIPTS_ROOT := project/scripts
+
+# Root directory of project tool files.
+TOOLS_ROOT :=project/tools
 
 # List of files in the tools dir. These files
 # will be assumed to be ready-to-compile.
-BUILD_TOOLS := $(shell find project/tools -type f)
+BUILD_TOOLS := $(shell find $(TOOLS_ROOT) -type f)
 
-build: $(BUILD_ROOT)/.hash $(BUILD_ROOT)/bin $(BUILD_ROOT)/plugins
+
+build: $(BUILD_ROOT)/.hash structure config
 .PHONEY: build
 
+
+# Remove build objects.
 clean:
 > rm -rf $(BUILD_ROOT)
 .PHONEY: clean
 
+
+# Sentinel. Generates a hash file as a build
+# stamp.
 $(BUILD_ROOT)/.hash: $(BUILD_TOOLS)
 > @ # Execute in silence.
-> build_root=$(@D)
-> mkdir -p $${build_root}
-> echo "$$(pwgen -1As)" > $${build_root}/.hash
+> mkdir -p $(@D)
+> echo "$$(pwgen -1As)" > $(@D)/.hash
 
-$(BUILD_ROOT)/bin:
-> @[ -d $(@D)/bin ] || mkdir -p $(@D)/bin
 
-$(BUILD_ROOT)/plugins:
-> @[ -d $(@D)/plugins ] || mkdir -p $(@D)/plugins
+# Generates distribution config file(s).
+config:
+> @
+> [ -f $(BUILD_ROOT)/.config ] || $(SCRIPTS_ROOT)/initconfig.bash $(BUILD_ROOT) .config
+
+
+# Generates the internal structure of the
+# distribution.
+structure:
+> @
+> [ -d $(BUILD_ROOT)/bin ] || mkdir -p $(BUILD_ROOT)/bin
+> [ -d $(BUILD_ROOT)/plugins ] || mkdir -p $(BUILD_ROOT)/plugins
