@@ -2,7 +2,7 @@
 
 # Exits if incorrect number of arguments passed
 # this script.
-if [[ $# < 2 || $# >= 3 ]]; then
+if [[ $# < 2 ]]; then
     echo "recieved $# arguments, expected 2."
     exit 1
 fi
