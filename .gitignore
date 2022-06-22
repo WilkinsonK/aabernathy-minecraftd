@@ -6,8 +6,22 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# C Distribution / packaging
+*.cache
+*.in
+*.m4
+*.deps/
+compile
+config.status
+configure
+depcomp
+install-*
+makefile
+missing
+
 # C extensions
 *.so
+*.o
 
 # Distribution / packaging
 .Python

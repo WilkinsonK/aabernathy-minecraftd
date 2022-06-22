@@ -1,4 +1,4 @@
-!#/bin/bash
+#!/bin/bash
 
 # Fails and bails if subprocesses fail.
 set -eu -o pipefail -c
