@@ -32,7 +32,7 @@
 
 #define MCDEFAULT_DEFAULT ""
 #define MCDEFAULT_EXE "java"
-#define MCDEFAULT_JAR "server/launcher-1.18.2.jar"
+#define MCDEFAULT_JAR "launcher-1.18.2.jar"
 #define MCDEFAULT_NOGUI "nogui"
 #define MCDEFAULT_RAM "1024M"
 
@@ -176,7 +176,7 @@ void server_parse_envvars() {
 
     // target binaries.
     server_parsef(MCSERVER_EXE, NULL, "MCSERVER_EXE", MCDEFAULT_EXE);
-    server_parsef(MCSERVER_JAR, "-jar %s", "MCSERVER_JAR", MCDEFAULT_JAR);
+    server_parsef(MCSERVER_JAR, NULL, "MCSERVER_JAR", MCDEFAULT_JAR);
 
     // Memory related values.
     server_parsef(MCSERVER_RAM_INI, "-Xms%s", "MCSERVER_RAM_INI", MCDEFAULT_RAM);
@@ -193,16 +193,13 @@ void server_parse_envvars() {
 void server_start_engine() {
     // Collect arguments to pass to
     // executor.
-    // char* engine_args[] = {
-    //     MCSERVER_EXE,
-    //     MCSERVER_RAM_INI,
-    //     MCSERVER_RAM_MAX,
-    //     MCSERVER_JAR,
-    //     MCDEFAULT_NOGUI, NULL}; // Must terminate args with `NULL`.
-
     char* engine_args[] = {
-        "which",
-        MCSERVER_EXE, NULL};
+        MCSERVER_EXE,
+        MCSERVER_RAM_INI,
+        MCSERVER_RAM_MAX,
+        "-jar",
+        MCSERVER_JAR,
+        MCDEFAULT_NOGUI, NULL}; // Must terminate args with `NULL`.
 
     server_render_argout((char**)engine_args, ", ");
 
