@@ -32,13 +32,17 @@
 
 #define MCDEFAULT_DEFAULT ""
 #define MCDEFAULT_EXE "java"
-#define MCDEFAULT_JAR "server-1.18.1.jar"
+#define MCDEFAULT_JAR "server/launcher-1.18.2.jar"
 #define MCDEFAULT_NOGUI "nogui"
 #define MCDEFAULT_RAM "1024M"
 
 #define MCDEFAULT_STR_SIZE 64
 #define MCDEFAULT_STR_SIZE_MAX 128
 #define MCDEFAULT_STR_FMT "%s"
+
+#ifndef SOURCE_DIR
+#define SOURCE_DIR ""
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -189,12 +193,16 @@ void server_parse_envvars() {
 void server_start_engine() {
     // Collect arguments to pass to
     // executor.
+    // char* engine_args[] = {
+    //     MCSERVER_EXE,
+    //     MCSERVER_RAM_INI,
+    //     MCSERVER_RAM_MAX,
+    //     MCSERVER_JAR,
+    //     MCDEFAULT_NOGUI, NULL}; // Must terminate args with `NULL`.
+
     char* engine_args[] = {
-        MCSERVER_EXE,
-        MCSERVER_RAM_INI,
-        MCSERVER_RAM_MAX,
-        MCSERVER_JAR,
-        MCDEFAULT_NOGUI, NULL}; // Must terminate args with `NULL`.
+        "which",
+        MCSERVER_EXE, NULL};
 
     server_render_argout((char**)engine_args, ", ");
 

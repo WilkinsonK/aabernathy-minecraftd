@@ -1,3 +1,4 @@
 AUTOMAKE_OPTIONS = foreign
-bin_PROGRAMS = mctools
-mctools_SOURCES = project/server.c
+distdir = ./dist
+dist_PROGRAMS = mctools
+mctools_SOURCES = project/main.c
