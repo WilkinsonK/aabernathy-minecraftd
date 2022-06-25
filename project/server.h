@@ -61,8 +61,6 @@
 #define V_DEBUG_MODE 0
 #endif
 
-#define ARRAY_SIZE(ARRAY, T) (sizeof(ARRAY)/sizeof(T))
-
 // Container for launch related values.
 typedef struct serverargs_t {
     // Java executable.
