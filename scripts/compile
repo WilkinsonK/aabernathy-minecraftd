@@ -1,0 +1,12 @@
+#!/bin/bash
+
+
+set -eu
+
+SOURCE_DIR=$(pwd)
+
+gcc -Wall -Wextra                      \
+    -DV_SOURCE_DIR="\"${SOURCE_DIR}\"" \
+    -DV_DEBUG_MODE=1                   \
+    project/server.c                   \
+    -o $SOURCE_DIR/mserver

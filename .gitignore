@@ -13,7 +13,7 @@ __pycache__/
 *.in
 *.m4
 *.deps/
-compile
+!scripts/compile
 config.status
 configure
 depcomp
