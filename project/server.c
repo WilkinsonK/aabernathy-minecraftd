@@ -14,7 +14,7 @@ static serverargs_t global_sargs;
 // Raise an error message and bail.
 void panic(const char* message)
 {
-    fprintf(stderr, "error: %s\n", message);
+    fprintf(stderr, C_RED "error" C_NO_COLOR ": %s\n", message);
     exit(EXIT_FAILURE);
 }
 
