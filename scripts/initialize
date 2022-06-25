@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Executes the main entry point from target
+# location.
+
+set -eu
+
+SERVER_VERSION=1.18.2
+SOURCE_DIR=$(pwd)
+
+cd $SOURCE_DIR/server && $SOURCE_DIR/mserver $SERVER_VERSION

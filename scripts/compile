@@ -1,12 +1,15 @@
 #!/bin/bash
 
+# Compiles the main entry point for this
+# application into an executable.
 
 set -eu
 
+DEBUG_MODE=1
 SOURCE_DIR=$(pwd)
 
 gcc -Wall -Wextra                      \
     -DV_SOURCE_DIR="\"${SOURCE_DIR}\"" \
-    -DV_DEBUG_MODE=1                   \
+    -DV_DEBUG_MODE=$DEBUG_MODE         \
     project/server.c                   \
     -o $SOURCE_DIR/mserver
