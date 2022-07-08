@@ -7,5 +7,6 @@ set -eu
 
 SERVER_VERSION=1.18.2
 SOURCE_DIR=$(pwd)
+EXECUTABLE=$SOURCE_DIR/build/bin/mserver
 
-cd $SOURCE_DIR/server && $SOURCE_DIR/mserver $SERVER_VERSION
+cd $SOURCE_DIR/server && $EXECUTABLE $SERVER_VERSION
