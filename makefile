@@ -1,5 +1,5 @@
 # Include the configuration file.
--include make.conf
+include make.conf
 
 # Define unset macros for use in source.
 CFLAGS += 								 \
@@ -36,10 +36,6 @@ $(BLD_ROOT):
 > @[ -d $@/objs ] || mkdir -p $@/objs
 > @[ -d $@/bin ] || mkdir -p $@/bin
 
-%.o: %.c
-> @echo $<
-> $(CC) $(CFLAGS) -c $< -o $@
-
 $(BLD_ROOT)/objs/%.o: $(SRC_ROOT)/%.c
-> @echo $<
-> $(CC) $(CFLAGS) -c $< -o $@
+> @echo "building $$(basename -- $@)..."
+> $(CC) $(CFLAGS) -o $@ -c $<
