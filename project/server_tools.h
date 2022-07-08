@@ -76,6 +76,6 @@ typedef struct serverargs_t {
 } serverargs_t;
 
 // Initialize server engine.
-int init_server();
+int init_server(char* server_version);
 
 #endif // H_SERVER_MGMT
