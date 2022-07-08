@@ -8,22 +8,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# C Distribution / packaging
-*.cache
-*.in
-*.m4
-*.deps/
-!scripts/compile
-config.status
-configure
-depcomp
-install-*
-makefile
-missing
-
 # C extensions
 *.so
 *.o
+*.d
 
 # Distribution / packaging
 .Python
