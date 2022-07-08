@@ -7,9 +7,14 @@ set -eu
 
 DEBUG_MODE=1
 SOURCE_DIR=$(pwd)
+CVERSION=c17
+CCOMPILER=clang
 
-gcc -Wall -Wextra                      \
+$CCOMPILER -v                          \
+    -L$SOURCE_DIR/project              \
+    -std=$CVERSION                     \
+    -Wall -Wextra                      \
     -DV_SOURCE_DIR="\"${SOURCE_DIR}\"" \
     -DV_DEBUG_MODE=$DEBUG_MODE         \
-    project/server.c                   \
+    project/main.c                     \
     -o $SOURCE_DIR/mserver

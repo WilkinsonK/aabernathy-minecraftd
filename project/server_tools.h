@@ -29,12 +29,10 @@
 */
 
 #ifndef H_SERVER_MGMT
+#define H_SERVER_MGMT
 
-// Max size of a filename.
-#define C_MAX_FILEPATH_SIZE 512
-
-// Max size of a char array.
-#define C_MAX_VARCHAR_SIZE 256
+#include "server_format.h"
+#include "server_system.h"
 
 // Path to executable directory.
 #ifndef V_SOURCE_DIR
@@ -80,5 +78,4 @@ typedef struct serverargs_t {
 // Initialize server engine.
 int init_server();
 
-#define H_SERVER_MGMT
 #endif // H_SERVER_MGMT

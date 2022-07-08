@@ -1,4 +1,0 @@
-AUTOMAKE_OPTIONS = foreign
-distdir = ./dist
-dist_PROGRAMS = mctools
-mctools_SOURCES = project/main.c

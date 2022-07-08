@@ -1,3 +1,6 @@
+// ANSI color definitions for making terminal
+// outputs more appealing.
+
 #ifndef H_COLOR_DEFS
 
 // ANSI color definitions
