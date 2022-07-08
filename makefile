@@ -7,7 +7,7 @@ CFLAGS += 								 \
 	-DV_DEBUG_MODE=$(CDEBUG)
 
 BLD_SOURCE_FILES := $(wildcard $(SRC_ROOT)/*.c)
-BLD_OBJECT_FILES := $(BLD_SOURCE_FILES:$(SRC_ROOT)/%.c=$(BLD_ROOT)/objs/%.o)
+BLD_OBJECT_FILES := $(BLD_SOURCE_FILES:$(SRC_ROOT)/%.c=$(BLD_ROOT)objs/%.o)
 BLD_DEPEND_FILES := $(BLD_OBJECT_FILES:.o=.d)
 
 # Include all dependency files in makefile.
@@ -20,22 +20,34 @@ clean:
 > rm -rf $(BLD_ROOT)
 .PHONEY: clean
 
-build: $(BLD_ROOT) $(BLD_ROOT)/.hash $(INST_ROOT)/mserver
+build: $(BLD_ROOT) $(BLD_ROOT).hash
 .PHONEY: build
 
-$(BLD_ROOT)/.hash: $(BLD_OBJECT_FILES)
+$(BLD_ROOT).hash: $(INST_ROOT)mserver
 > @echo "generate hash sentinel..."
 > mkdir -p $(@D)
-> echo "$$(pwgen -1As)" > $(@D)/.hash
+> echo "$$(pwgen -1As)" > $@
 
-$(INST_ROOT)/mserver: $(BLD_OBJECT_FILES)
+$(INST_ROOT)mserver: $(BLD_OBJECT_FILES)
 > @echo "compile binary from objects..."
 > $(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 $(BLD_ROOT):
-> @[ -d $@/objs ] || mkdir -p $@/objs
-> @[ -d $@/bin ] || mkdir -p $@/bin
+> @[ -d $@objs ] || mkdir -p $@objs
+> @[ -d $@bin ] || mkdir -p $@bin
 
-$(BLD_ROOT)/objs/%.o: $(SRC_ROOT)/%.c
-> @echo "building $(@F)..."
+$(BLD_ROOT)objs/%.o: $(SRC_ROOT)%.c
+> @echo "building '$(*F)'..."
 > $(CC) $(CFLAGS) -o $@ -c $<
+
+libconfig: $(BLD_ROOT)libconfig-1.7.3.lib
+.PHONEY: libconfig
+
+$(BLD_ROOT)%.lib: $(BLD_ROOT) $(shell find $(INC_ROOT)$* -type f)
+> temp_root=$(INC_ROOT)$*/temp
+> echo "Library $*: building lib..."
+> mkdir $$temp_root && cd $$temp_root
+> $$temp_root/../configure
+> $(MAKE) -C $$temp_root
+> echo "Library $*: generating hash sentinel..."
+> echo "$$(pwgen -1As)" > $@
