@@ -20,15 +20,15 @@ clean:
 > rm -rf $(BLD_ROOT)
 .PHONEY: clean
 
-build: $(BLD_ROOT) $(BLD_ROOT)/.hash
+build: $(BLD_ROOT) $(BLD_ROOT)/.hash $(INST_ROOT)/mserver
 .PHONEY: build
 
-$(BLD_ROOT)/.hash: $(BLD_SOURCE_FILES) $(BLD_ROOT)/bin/mserver
+$(BLD_ROOT)/.hash: $(BLD_OBJECT_FILES)
 > @echo "generate hash sentinel..."
 > mkdir -p $(@D)
 > echo "$$(pwgen -1As)" > $(@D)/.hash
 
-$(BLD_ROOT)/bin/mserver: $(BLD_OBJECT_FILES)
+$(INST_ROOT)/mserver: $(BLD_OBJECT_FILES)
 > @echo "compile binary from objects..."
 > $(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
@@ -37,5 +37,5 @@ $(BLD_ROOT):
 > @[ -d $@/bin ] || mkdir -p $@/bin
 
 $(BLD_ROOT)/objs/%.o: $(SRC_ROOT)/%.c
-> @echo "building $$(basename -- $@)..."
+> @echo "building $(@F)..."
 > $(CC) $(CFLAGS) -o $@ -c $<
