@@ -1,17 +1,14 @@
 # Include the configuration file.
 include make.conf
 
-# Define unset macros for use in source.
+# Define unset macros for use in this build.
+# Setting this outside of `make.conf` as these
+# values are project specific and most likely
+# won't translate well to other projects.
 CFLAGS += 								 \
 	-DV_SOURCE_DIR="\"$(PROJECT_ROOT)\"" \
 	-DV_DEBUG_MODE=$(CDEBUG)
 
-BLD_SOURCE_FILES := $(wildcard $(SRC_ROOT)/*.c)
-BLD_OBJECT_FILES := $(BLD_SOURCE_FILES:$(SRC_ROOT)/%.c=$(BLD_ROOT)objs/%.o)
-BLD_DEPEND_FILES := $(BLD_OBJECT_FILES:.o=.d)
-
-# Include all dependency files in makefile.
--include $(BLD_DEPEND_FILES)
 
 all: build
 .PHONEY: all
@@ -23,25 +20,26 @@ clean:
 build: $(BLD_ROOT) $(BLD_ROOT).hash $(INST_ROOT)mserver
 .PHONEY: build
 
+# Prepare build distributable.
 $(BLD_ROOT):
 > @[ -d $@objs ] || mkdir -p $@objs
 > @[ -d $@bin ] || mkdir -p $@bin
 
-$(BLD_ROOT).hash: $(BLD_OBJECT_FILES) libconfig
+# Generate the primary sentinel file.
+$(BLD_ROOT).hash: $(BLD_OBJECT_FILES)
 > @echo "generate hash sentinel..."
 > mkdir -p $(@D)
 > echo "$$(pwgen -1As)" > $@
 
+# Builds executable binary from object files.
 $(INST_ROOT)mserver: $(BLD_OBJECT_FILES)
 > @echo "compile binary from objects..."
 > $(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
+# Builds object files from related source files.
 $(BLD_ROOT)objs/%.o: $(SRC_ROOT)%.c
 > @echo "building '$(*F)'..."
 > $(CC) $(CFLAGS) -o $@ -c $<
-
-libconfig: $(BLD_ROOT)libconfig-1.7.3.libhash
-.PHONEY: libconfig
 
 # Builds the target library from source. This is
 # assuming that the source is built using
