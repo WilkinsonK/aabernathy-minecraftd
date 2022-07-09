@@ -9,6 +9,16 @@ CFLAGS += 								 \
 	-DV_SOURCE_DIR="\"$(PROJECT_ROOT)\"" \
 	-DV_DEBUG_MODE=$(CDEBUG)
 
+# Required build files and dependencies.
+BLD_SOURCE_FILES := 				\
+	$(wildcard $(SRC_ROOT)/*.c) 	\
+	$(wildcard $(SRC_ROOT)/lib/*.c)
+BLD_OBJECT_FILES := $(BLD_SOURCE_FILES:$(SRC_ROOT)/%.c=$(BLD_ROOT)objs/%.o)
+BLD_DEPEND_FILES := $(BLD_OBJECT_FILES:.o=.d)
+
+# Include all dependency files in makefile.
+-include $(BLD_DEPEND_FILES)
+
 
 all: build
 .PHONEY: all
@@ -38,6 +48,7 @@ $(INST_ROOT)mserver: $(BLD_OBJECT_FILES)
 
 # Builds object files from related source files.
 $(BLD_ROOT)objs/%.o: $(SRC_ROOT)%.c
+> @[ -d $(@D) ] || mkdir -p $(@D)
 > @echo "building '$(*F)'..."
 > $(CC) $(CFLAGS) -o $@ -c $<
 

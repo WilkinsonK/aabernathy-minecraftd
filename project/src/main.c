@@ -1,7 +1,7 @@
 #include <stdlib.h>
 
-#include "server_system.h"
-#include "server_tools.h"
+#include "lib/server_system.h"
+#include "lib/server_tools.h"
 
 int main(int argc, char** argv)
 {
