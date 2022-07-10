@@ -27,13 +27,8 @@ clean:
 > rm -rf $(BLD_ROOT)
 .PHONEY: clean
 
-build: $(BLD_ROOT) $(BLD_ROOT).hash $(INST_ROOT)mserver
+build: $(BLD_ROOT).hash $(INST_ROOT)mserver
 .PHONEY: build
-
-# Prepare build distributable.
-$(BLD_ROOT):
-> @[ -d $@objs ] || mkdir -p $@objs
-> @[ -d $@bin ] || mkdir -p $@bin
 
 # Generate the primary sentinel file.
 $(BLD_ROOT).hash: $(BLD_OBJECT_FILES)
@@ -44,12 +39,13 @@ $(BLD_ROOT).hash: $(BLD_OBJECT_FILES)
 # Builds executable binary from object files.
 $(INST_ROOT)mserver: $(BLD_OBJECT_FILES)
 > @echo "compile binary from objects..."
+> [ -d $(@D) ] || mkdir -p $(@D)
 > $(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 # Builds object files from related source files.
 $(BLD_ROOT)objs/%.o: $(SRC_ROOT)%.c
-> @[ -d $(@D) ] || mkdir -p $(@D)
 > @echo "building '$(*F)'..."
+> @[ -d $(@D) ] || mkdir -p $(@D)
 > $(CC) $(CFLAGS) -o $@ -c $<
 
 # Builds the target library from source. This is
