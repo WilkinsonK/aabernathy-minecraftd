@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "colors.h"
 #include "server_format.h"
 #include "server_system.h"
 #include "server_tools.h"
@@ -57,7 +58,7 @@ int init_server(char* server_version)
 {
     if (server_version == NULL)
     {
-        panic("invalid server version.");
+        panicf("invalid server version.", NULL);
     }
 
     // Initialize parameters.

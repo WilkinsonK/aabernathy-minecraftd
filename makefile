@@ -27,7 +27,7 @@ clean:
 > rm -rf $(BLD_ROOT)
 .PHONEY: clean
 
-build: $(BLD_ROOT).hash $(INST_ROOT)mserver
+build: $(BLD_ROOT).hash $(INST_ROOT)mcserver
 .PHONEY: build
 
 # Generate the primary sentinel file.
@@ -37,7 +37,7 @@ $(BLD_ROOT).hash: $(BLD_OBJECT_FILES)
 > echo "$$(pwgen -1As)" > $@
 
 # Builds executable binary from object files.
-$(INST_ROOT)mserver: $(BLD_OBJECT_FILES)
+$(INST_ROOT)mcserver: $(BLD_OBJECT_FILES)
 > @echo "compile binary from objects..."
 > [ -d $(@D) ] || mkdir -p $(@D)
 > $(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
