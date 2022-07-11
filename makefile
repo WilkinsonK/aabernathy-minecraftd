@@ -45,7 +45,7 @@ $(INST_ROOT)mserver: $(BLD_OBJECT_FILES)
 # Builds object files from related source files.
 $(BLD_ROOT)objs/%.o: $(SRC_ROOT)%.c
 > @echo "building '$(*F)'..."
-> @[ -d $(@D) ] || mkdir -p $(@D)
+> [ -d $(@D) ] || mkdir -p $(@D)
 > $(CC) $(CFLAGS) -o $@ -c $<
 
 # Builds the target library from source. This is
