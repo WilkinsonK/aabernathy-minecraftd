@@ -68,6 +68,13 @@ int init_server(char* server_version)
     char server_cls[C_MAX_FILEPATH_SIZE];
     sprintf(server_cls, global_sargs.server_cls, server_version);
 
+    noticef(
+        "starting server target:\n"
+        "  version:     '%s'\n"
+        "  initial mem: %s\n"
+        "  maximum mem: %s\n",
+        server_version, global_sargs.memory_ini, global_sargs.memory_max);
+
     char* engine_sargs[] = {
         global_sargs.executable,
         global_sargs.memory_ini,
